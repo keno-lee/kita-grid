@@ -1,1 +1,0 @@
-import{_ as t,c as e,o as l,R as d}from"./chunks/framework.DeQ1eoAg.js";const m=JSON.parse('{"title":"API 文档","description":"","frontmatter":{},"headers":[],"relativePath":"api/index.md","filePath":"api/index.md"}'),n={name:"api/index.md"},a=d("",7),i=[a];function s(x,r,g,o,f,y){return l(),e("div",null,i)}const h=t(n,[["render",s]]);export{m as __pageData,h as default};
