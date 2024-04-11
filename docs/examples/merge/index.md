@@ -1,9 +1,9 @@
 # 合并单元格
 
-## 头合并
-
-<!<< ./MergeHeaderView.vue
-
-## 单元格合并
+## 表身合并
 
 <!<< ./MergeView.vue
+
+## 表头合并 - 有bug，开发中
+
+<!<< ./MergeHeaderView.vue

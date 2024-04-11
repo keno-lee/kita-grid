@@ -35,8 +35,6 @@ const columns: Column[] = [
   { type: 'checkbox', width: 50, fixed: 'left' },
   { type: 'checkbox', width: 50, fixed: 'left' },
   ...generateColumns(20),
-  { type: 'index', width: 50, fixed: 'right' },
-  { type: 'checkbox', width: 50, fixed: 'right' },
 ];
 const list: ListItem[] = generateList(columns, 5000);
 </script>

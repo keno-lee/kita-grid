@@ -43,6 +43,7 @@ const generateColumns = (length = 10, props?: any) =>
     field: `${chars[columnIndex]}`,
     title: `${chars[columnIndex]}`,
     width: 200,
+    resizable: true,
   }));
 
 const generateList = (columns: ReturnType<typeof generateColumns>, length = 200, prefix = 'row-') =>

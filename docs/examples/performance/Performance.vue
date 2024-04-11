@@ -1,5 +1,6 @@
 <template>
   <div class="base-view">
+    <div>行: {{ list.length }} 列: {{ columns.length }}</div>
     <div style="width: 100%; height: 600px; border: 2px solid var(--color-border)">
       <Grid :columns="columns" :list="list" :merges="merges" selection border></Grid>
     </div>
@@ -79,7 +80,8 @@ const merges = [
   overflow: hidden;
 
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 </style>

@@ -24,6 +24,7 @@ import type { ListItem, ColumnItem } from '@/src/type';
 const gridStore = inject('gridStore') as GridStore;
 
 const { watchData } = gridStore;
+
 defineProps<{
   rowIndex: number;
   row: ListItem;

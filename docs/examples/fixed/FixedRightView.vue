@@ -31,9 +31,6 @@ const generateList = (columns: ReturnType<typeof generateColumns>, length = 20, 
   });
 
 const columns: Column[] = [
-  { type: 'index', width: 50, fixed: 'left', index: (index: number) => {} },
-  { type: 'checkbox', width: 50, fixed: 'left' },
-  { type: 'checkbox', width: 50, fixed: 'left' },
   ...generateColumns(20),
   { type: 'index', width: 50, fixed: 'right' },
   { type: 'checkbox', width: 50, fixed: 'right' },

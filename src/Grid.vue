@@ -19,6 +19,7 @@
           <col v-for="column in centerNormalColumns" :key="column._id" :width="column.width" />
           <col v-for="column in rightFixedColumns" :key="column._id" :width="column.width" />
         </colgroup>
+
         <thead
           ref="stickyHeaderRefEl"
           data-id="stickyHeader"

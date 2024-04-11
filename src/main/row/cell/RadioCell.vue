@@ -1,10 +1,6 @@
 <template>
   <div class="kita-grid-cell kita-grid-cell__checkbox">
-    <input
-      type="checkbox"
-      :checked="watchData.checkboxRows.has(row)"
-      @change="(e) => changeValue(e)"
-    />
+    <input type="radio" :checked="watchData.radioRow?.id === row.id" @change="changeValue" />
     <span class="kita-grid-cell__checkbox-filed" v-if="column.field">{{
       column.field ? row[column.field] : ''
     }}</span>
@@ -24,11 +20,7 @@ const props = defineProps<{
   column: ColumnItem;
 }>();
 
-const changeValue = (e: Event) => {
-  if ((e?.target as HTMLInputElement)?.checked) {
-    gridStore.addCheckboxRows(props.row);
-  } else {
-    gridStore.deleteCheckboxRows(props.row);
-  }
+const changeValue = () => {
+  gridStore.addRadioRow(props.row);
 };
 </script>

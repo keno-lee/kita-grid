@@ -101,6 +101,11 @@ export class GridStore {
     // 展开行显示的映射
     expandMap: {} as Record<string, boolean>,
 
+    // 多数
+    checkboxRows: new Set() as Set<ListItem>,
+    // 唯一
+    radioRow: null as null | ListItem,
+
     // FIXME： 分组不需要这个，要重新写分组逻辑
     // 配置
     config: {
@@ -280,6 +285,30 @@ export class GridStore {
 
   setTableRootEl(el: HTMLElement) {
     this.tableRootEl = el;
+  }
+
+  getCheckboxRows() {
+    return this.watchData.checkboxRows;
+  }
+
+  addCheckboxRows(row: ListItem) {
+    this.watchData.checkboxRows.add(row);
+  }
+
+  deleteCheckboxRows(row: ListItem) {
+    this.watchData.checkboxRows.delete(row);
+  }
+
+  addAllCheckboxRows() {
+    this.watchData.checkboxRows = new Set(this.virtualListProps.list);
+  }
+
+  clearCheckboxRows() {
+    this.watchData.checkboxRows.clear();
+  }
+
+  addRadioRow(row: ListItem) {
+    this.watchData.radioRow = row;
   }
 
   // setMergeMethods(mergeMethods: any) {

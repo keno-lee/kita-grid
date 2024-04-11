@@ -49,6 +49,7 @@ export default defineConfig({
       ],
       '/examples/': [
         { text: '基础功能', link: '/examples/base/' },
+
         {
           text: '行设置',
           collapsed: false,
@@ -64,7 +65,8 @@ export default defineConfig({
           text: '列设置',
           collapsed: false,
           items: [
-            { text: '固定列', link: '/examples/fixed/' },
+            { text: '列固定', link: '/examples/fixed/' },
+            { text: '复选框', link: '/examples/checkbox/' },
             { text: '列宽拖拽', link: '/examples/column/' },
             { text: '自定义索引', link: '/examples/index-view/' },
             { text: '自定义列渲染', link: '/examples/custom/' },
@@ -74,11 +76,11 @@ export default defineConfig({
           text: 'Advance',
           collapsed: false,
           items: [
+            { text: '合并单元格', link: '/examples/merge/' },
             { text: '高性能', link: '/examples/performance/' },
             { text: '自定义类/样式', link: '/examples/custom-class-style/' },
             { text: '事件处理', link: '/examples/events/' },
             { text: 'template', link: '/examples/table/' },
-            { text: '合并', link: '/examples/merge/' },
             { text: '区域选中', link: '/examples/selection/' },
             { text: 'spreadsheet(实验室)', link: '/examples/spreadsheet/' },
           ],

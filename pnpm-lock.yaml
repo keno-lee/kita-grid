@@ -15,8 +15,8 @@ dependencies:
     specifier: ^0.14.6
     version: 0.14.7(vue@3.4.21)
   vue-virt-list:
-    specifier: ^1.0.3
-    version: 1.0.5(vue@3.4.21)
+    specifier: ^1.0.7
+    version: 1.0.8(vue@3.4.21)
 
 devDependencies:
   '@rushstack/eslint-patch':
@@ -4089,8 +4089,8 @@ packages:
       typescript: 5.2.2
     dev: true
 
-  /vue-virt-list@1.0.5(vue@3.4.21):
-    resolution: {integrity: sha512-422AAoU8SzNeMFzHKzl76MCaD8x3uV8YdEpFvNMpfN5XeaWgCWds7ZgZmvOB05b2rfsqvSALjHx7KIuPwmgoyA==}
+  /vue-virt-list@1.0.8(vue@3.4.21):
+    resolution: {integrity: sha512-MGw+r5aGXUf7VLwMYaHFQfBQlhEV7ej9xAiqmOhcXCapwopB36+siU7k824rTuZkCO2tDTbgbc+ZRs5ch9R6Mg==}
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1
       vue: ^2.0.0 || >=3.0.0

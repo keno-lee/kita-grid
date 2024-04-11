@@ -206,6 +206,8 @@ function getRenderCell(column: ColumnItem) {
       return IndexHeaderCell;
     case ColumnType.Checkbox:
       return CheckboxHeaderCell;
+    case ColumnType.Radio:
+      return TextHeaderCell;
     // case ColumnType.orderCheckbox:
     //   return OrderHeaderCell;
     default:

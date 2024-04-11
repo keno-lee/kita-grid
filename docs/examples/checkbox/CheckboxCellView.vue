@@ -1,7 +1,7 @@
 <template>
   <div class="base-view">
     <div style="width: 100%; height: 600px; border: 2px solid var(--color-border)">
-      <Grid :columns="columns" :list="list" selection border></Grid>
+      <Grid :columns="columns" :list="list" border></Grid>
     </div>
   </div>
 </template>
@@ -31,12 +31,10 @@ const generateList = (columns: ReturnType<typeof generateColumns>, length = 20, 
   });
 
 const columns: Column[] = [
-  { type: 'index', width: 50, fixed: 'left', index: (index: number) => {} },
   { type: 'checkbox', width: 50, fixed: 'left' },
-  { type: 'checkbox', width: 50, fixed: 'left' },
+  { type: 'checkbox', width: 200, fixed: 'left', field: 'checkbox', title: '复选框1' },
+  // { type: 'checkbox', width: 200, fixed: 'left', field: 'checkbox', title: '复选框2' },
   ...generateColumns(20),
-  { type: 'index', width: 50, fixed: 'right' },
-  { type: 'checkbox', width: 50, fixed: 'right' },
 ];
 const list: ListItem[] = generateList(columns, 5000);
 </script>

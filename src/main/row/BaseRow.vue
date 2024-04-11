@@ -77,14 +77,14 @@
 <script setup lang="ts">
 import { inject, computed } from 'vue';
 import type { GridStore } from '@/src/store';
+import { ColumnType, type ColumnItem, type ListItem } from '@/src/type';
 import { useObserverItem } from 'vue-virt-list';
 import TitleCell from './cell/TitleCell.vue';
 import TextCell from './cell/TextCell.vue';
 import { useRenderColumns } from '@/src/hooks/useRenderColumns';
 import IndexCell from './cell/IndexCell.vue';
 import CheckboxCell from './cell/CheckboxCell.vue';
-
-import { ColumnType, type ColumnItem, type ListItem } from '@/src/type';
+import RadioCell from './cell/RadioCell.vue';
 import ExpandCell from './cell/ExpandCell.vue';
 
 const gridStore = inject('gridStore') as GridStore;
@@ -201,6 +201,8 @@ function getRenderCell(column: ColumnItem) {
       return TitleCell;
     case ColumnType.Checkbox:
       return CheckboxCell;
+    case ColumnType.Radio:
+      return RadioCell;
     case ColumnType.Expand:
       return ExpandCell;
     // case ColumnType.orderCheckbox:

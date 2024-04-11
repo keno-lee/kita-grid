@@ -192,6 +192,14 @@ thead.kita-grid-header {
 
     .kita-grid-th-cell {
       padding: 8px 12px;
+
+      &.kita-grid-th-cell__checkbox {
+        // text-align: center;
+
+        .kita-grid-th-cell__checkbox-title {
+          margin-left: 4px;
+        }
+      }
     }
 
     &.is-fixed {
@@ -356,7 +364,11 @@ tbody.kita-grid-body {
     }
 
     &.kita-grid-cell__checkbox {
-      text-align: center;
+      // text-align: center;
+
+      .kita-grid-cell__checkbox-filed {
+        margin-left: 4px;
+      }
     }
   }
 
