@@ -15,7 +15,7 @@ dependencies:
     specifier: ^0.14.6
     version: 0.14.7(vue@3.4.21)
   vue-virt-list:
-    specifier: ^1.0.7
+    specifier: ^1.0.8
     version: 1.0.8(vue@3.4.21)
 
 devDependencies:
