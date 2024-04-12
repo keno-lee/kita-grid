@@ -1,5 +1,5 @@
 <template>
-  <tr ref="itemRefEl" :class="cls.row()" :style="getRowStyle()" @mousedown="handleCurrentRowClick">
+  <tr ref="itemRefEl" :class="cls.row()" :style="getRowStyle()">
     <!-- 左侧固定列 -->
     <template v-for="(column, index) in mainRenderInfo.leftColumns" :key="column.field">
       <td
@@ -102,8 +102,8 @@ const props = withDefaults(
   },
 );
 
-const currentRowId = computed(() => gridStore.getCurrentRow());
-const currentColumnId = computed(() => gridStore.getCurrentColumn());
+const selectRowId = computed(() => gridStore.getSelectRow());
+const selectColId = computed(() => gridStore.getSelectCol());
 
 const cls = {
   leftFixed: (column: ColumnItem, index: number) => [
@@ -111,7 +111,7 @@ const cls = {
     'is-fixed',
     'is-fixed--left',
     index === mainRenderInfo.value.leftColumns.length - 1 && 'is-last-column',
-    column._id === currentColumnId.value && 'current-column',
+    column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),
     column.className,
@@ -119,7 +119,7 @@ const cls = {
   leftPadding: () => ['kita-grid-td'],
   main: (column: ColumnItem) => [
     'kita-grid-td',
-    column._id === currentColumnId.value && 'current-column',
+    column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),
     column.className,
@@ -130,7 +130,7 @@ const cls = {
     'is-fixed',
     'is-fixed--right',
     index === 0 && 'is-first-column',
-    column._id === currentColumnId.value && 'current-column',
+    column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),
     column.className,
@@ -138,7 +138,7 @@ const cls = {
   row: () => [
     'kita-grid-tr',
     gridStore.getUIProps('stripe') && props.rowIndex % 2 && 'kita-grid-tr--striped',
-    props.row.id === currentRowId.value && 'current-row',
+    props.row.id === selectRowId.value && 'current-row',
     getRowClass(),
   ],
 };
@@ -211,15 +211,5 @@ function getRenderCell(column: ColumnItem) {
       if (column.bodyRender) return column?.bodyRender?.(column, props.row);
       return TextCell;
   }
-}
-
-function handleCurrentRowClick() {
-  gridStore.setCurrentRow(props.row.id);
-}
-
-function handleCurrentColumnClick(row: ListItem, column: ColumnItem, e: MouseEvent) {
-  // 判断是鼠标左键，才继续
-  if (e.button !== 0) return;
-  gridStore.setCurrentColumn(column._id);
 }
 </script>

@@ -89,6 +89,24 @@
   color: var(--#{$prefix}-header-text-color);
 }
 
+// 样式覆盖
+.kita-grid-main--highlight-hover-row {
+  tr.kita-grid-tr:hover {
+    & > td.kita-grid-td {
+      background-color: var(--#{$prefix}-row-hover-bg-color);
+    }
+  }
+}
+
+// 暂时好像没用
+// .kita-grid-main--highlight-hover-col {
+//   tr.kita-grid-tr:hover {
+//     & > td.kita-grid-td {
+//       background-color: var(--#{$prefix}-row-hover-bg-color);
+//     }
+//   }
+// }
+
 // 表格
 table.kita-grid-table {
   border-collapse: separate;
@@ -229,9 +247,9 @@ tbody.kita-grid-body {
     }
 
     &:hover {
-      & > td.kita-grid-td {
-        background-color: var(--#{$prefix}-row-hover-bg-color);
-      }
+      // & > td.kita-grid-td {
+      //   background-color: var(--#{$prefix}-row-hover-bg-color);
+      // }
 
       td.kita-grid-td.kita-grid-td--expand {
         background-color: var(--#{$prefix}-expanded-cell-bg-color);

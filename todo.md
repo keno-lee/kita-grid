@@ -15,3 +15,12 @@
   - [ ] 日期
   - [ ] 人员
   - [ ] checkbox
+
+## bugfix
+
+- 高亮
+
+  - 高亮列有bug
+  - 高亮选中行列(highlight-select-row/col)和高亮hover行(highlight-hover-row/col)要分开
+
+- 列宽拖拽鼠标样式要改成拖拽

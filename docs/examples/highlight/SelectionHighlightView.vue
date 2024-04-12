@@ -1,13 +1,7 @@
 <template>
   <div class="base-view">
     <div style="width: 100%; height: 600px; border: 2px solid var(--el-color-border)">
-      <Grid
-        :columns="columns"
-        :list="list"
-        highlight-current-row
-        highlight-current-column
-        selection
-      ></Grid>
+      <Grid :columns="columns" :list="list" highlightSelectRow highlightSelectCol selection></Grid>
     </div>
   </div>
 </template>

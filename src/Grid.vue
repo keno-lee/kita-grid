@@ -10,6 +10,7 @@
         cellpadding="0"
         :style="`width: ${fullWidth}px;`"
         ref="tableRefEl"
+        @mousedown="onMouseDown"
         @click="onClick"
         @dblclick="onDblclick"
         @contextmenu="onContextmenu"
@@ -125,10 +126,14 @@ const props = withDefaults(
     showTreeLine?: boolean;
     // 是否支持框选
     selection?: boolean;
+
+    highlightHoverRow?: boolean;
+    highlightHoverCol?: boolean;
+
     // 是否高亮当前行
-    highlightCurrentRow?: boolean;
+    highlightSelectRow?: boolean;
     // 是否高亮当前列
-    highlightCurrentColumn?: boolean;
+    highlightSelectCol?: boolean;
     // 合并单元格信息
     merges?: MergeCell[];
     // 分组信息
@@ -183,8 +188,10 @@ const props = withDefaults(
     stripe: false,
     showTreeLine: false,
     selection: false,
-    highlightCurrentRow: false,
-    highlightCurrentColumn: false,
+    highlightHoverRow: false,
+    highlightHoverCol: false,
+    highlightSelectRow: false,
+    highlightSelectCol: false,
     headerRowClassName: () => '',
     headerRowStyle: () => '',
     headerCellClassName: () => '',
@@ -209,8 +216,10 @@ gridStore.setUIProps('border', props.border);
 gridStore.setUIProps('stripe', props.stripe);
 gridStore.setUIProps('showTreeLine', props.showTreeLine);
 gridStore.setUIProps('selection', props.selection);
-gridStore.setUIProps('highlightCurrentRow', props.highlightCurrentRow);
-gridStore.setUIProps('highlightCurrentColumn', props.highlightCurrentColumn);
+gridStore.setUIProps('highlightHoverRow', props.highlightHoverRow);
+gridStore.setUIProps('highlightHoverCol', props.highlightHoverCol);
+gridStore.setUIProps('highlightSelectRow', props.highlightSelectRow);
+gridStore.setUIProps('highlightSelectCol', props.highlightSelectCol);
 gridStore.setUIProps('defaultExpandAll', props.defaultExpandAll);
 gridStore.setUIProps('headerRowClassName', props.headerRowClassName);
 gridStore.setUIProps('headerRowStyle', props.headerRowStyle);
@@ -366,7 +375,10 @@ function getComponent(row: ListItem) {
 }
 
 const cls = computed(() => ({
-  body: [gridStore.getUIProps('border') && 'kita-grid-main--border'],
+  body: [
+    gridStore.getUIProps('border') && 'kita-grid-main--border',
+    gridStore.getUIProps('highlightHoverRow') && 'kita-grid-main--highlight-hover-row',
+  ],
   table: ['kita-grid-table', gridStore.gridScrollingStatus.value],
 }));
 const fullWidth = computed(() => {
@@ -400,4 +412,20 @@ onMounted(() => {
 onBeforeUnmount(() => {
   gridStore.eventEmitter.offAll();
 });
+
+function onMouseDown(evt: MouseEvent) {
+  const path = evt.composedPath() as HTMLElement[];
+  // console.log(evt, path);
+  // const targetTr = path.find((el) => el.tagName === 'TR');
+  const targetTd = path.find((el) => el.tagName === 'TD');
+  // console.log(targetTr, targetTr?.dataset.id);
+  // console.log(targetTd, targetTd?.dataset.rowidx, targetTd?.dataset.colidx);
+
+  if (targetTd?.dataset.rowidx !== undefined) {
+    gridStore.setSelectRow(Number(targetTd?.dataset.rowidx));
+  }
+  if (targetTd?.dataset.colidx !== undefined) {
+    gridStore.setSelectCol(Number(targetTd?.dataset.colidx));
+  }
+}
 </script>

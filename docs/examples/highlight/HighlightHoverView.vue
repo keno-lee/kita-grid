@@ -1,7 +1,7 @@
 <template>
   <div class="base-view">
     <div style="width: 100%; height: 600px; border: 2px solid var(--el-color-border)">
-      <Grid :columns="columns" :list="list" highlight-current-column></Grid>
+      <Grid :columns="columns" :list="list" highlight-hover-row highlight-hover-col></Grid>
     </div>
   </div>
 </template>

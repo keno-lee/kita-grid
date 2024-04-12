@@ -35,8 +35,12 @@ export interface IUIProps {
   stripe: boolean;
   showTreeLine: boolean;
   selection: boolean;
-  highlightCurrentRow: boolean;
-  highlightCurrentColumn: boolean;
+
+  highlightHoverRow: boolean;
+  highlightHoverCol: boolean;
+
+  highlightSelectRow: boolean;
+  highlightSelectCol: boolean;
   defaultExpandAll: boolean;
   headerRowClassName: (data: { row: Column[]; rowIndex: number }) => string;
   headerRowStyle: (data: { row: Column[]; rowIndex: number }) => string;
@@ -139,8 +143,12 @@ export class GridStore {
     stripe: false,
     showTreeLine: false,
     selection: false,
-    highlightCurrentRow: false,
-    highlightCurrentColumn: false,
+
+    highlightHoverRow: false,
+    highlightHoverCol: false,
+
+    highlightSelectRow: false,
+    highlightSelectCol: false,
     defaultExpandAll: false,
     headerRowClassName: () => '',
     headerRowStyle: () => '',
@@ -185,8 +193,8 @@ export class GridStore {
   gridSelection = new GridSelection(this);
   gridScrollZone = new GridScrollZone(this);
 
-  currentRowId = ref('');
-  currentColumnId = ref('');
+  selectRowId = ref('');
+  selectColId = ref('');
 
   gridScrollingStatus = ref('is-scrolling-none');
 
@@ -844,24 +852,25 @@ export class GridStore {
     this.gridScrollZone.init(el);
   }
 
-  getCurrentRow() {
-    return this.currentRowId.value;
+  getSelectRow() {
+    return this.selectRowId.value;
   }
 
-  setCurrentRow(v: string) {
-    if (this.getUIProps('highlightCurrentRow')) {
-      this.currentRowId.value = v;
-    }
+  setSelectRow(rowIndex: number) {
+    // TODO 后面看看是不是要这个
+    // if (this.getUIProps('highlightSelectRow')) {
+    // }
+    this.selectRowId.value = this.virtualListProps.list[rowIndex].id;
   }
 
-  getCurrentColumn() {
-    return this.currentColumnId.value;
+  getSelectCol() {
+    return this.selectColId.value;
   }
 
-  setCurrentColumn(v: string) {
-    if (this.getUIProps('highlightCurrentColumn')) {
-      this.currentColumnId.value = v;
-    }
+  setSelectCol(colIndex: number) {
+    // if (this.getUIProps('highlightSelectCol')) {
+    // }
+    this.selectColId.value = this.flattedColumns[colIndex]._id;
   }
 
   setRowSelection(
