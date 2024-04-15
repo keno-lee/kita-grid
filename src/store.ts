@@ -508,6 +508,7 @@ export class GridStore {
   }
 
   groupFoldConstructor(list: ListItem[], conditions: { columnId: string; sort: 'desc' | 'asc' }[]) {
+    console.log('groupFoldConstructor', list.length, conditions);
     return this.constructGroup(list, 0, conditions);
   }
 
@@ -858,9 +859,9 @@ export class GridStore {
 
   setSelectRow(rowIndex: number) {
     // TODO 后面看看是不是要这个
-    // if (this.getUIProps('highlightSelectRow')) {
-    // }
-    this.selectRowId.value = this.virtualListProps.list[rowIndex].id;
+    if (this.getUIProps('highlightSelectRow')) {
+      this.selectRowId.value = this.virtualListProps.list[rowIndex].id;
+    }
   }
 
   getSelectCol() {
@@ -868,9 +869,9 @@ export class GridStore {
   }
 
   setSelectCol(colIndex: number) {
-    // if (this.getUIProps('highlightSelectCol')) {
-    // }
-    this.selectColId.value = this.flattedColumns[colIndex]._id;
+    if (this.getUIProps('highlightSelectCol')) {
+      this.selectColId.value = this.flattedColumns[colIndex]._id;
+    }
   }
 
   setRowSelection(

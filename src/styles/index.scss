@@ -454,7 +454,7 @@ tbody.kita-grid-body {
       transition: transform 0.2s ease-in-out;
       cursor: pointer;
 
-      &.tree-leading--expand {
+      &.tree-leading-icon--expand {
         transform: rotate(90deg);
       }
     }

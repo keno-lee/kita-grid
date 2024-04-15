@@ -1,7 +1,7 @@
 <template>
   <div class="base-view">
     <div class="control-panel">
-      <div v-for="(config, index) in state.groupConfig" :key="index">
+      <div style="display: flex" v-for="(config, index) in state.groupConfig" :key="index">
         <el-select v-model="config.columnId">
           <el-option
             v-for="item in groupByOptions"
@@ -20,7 +20,7 @@
         </el-select>
       </div>
       <div>
-        <el-button @click="state.groupConfig.push({ columnId: 'key0', sort: 'asc' })"
+        <el-button @click="state.groupConfig.push({ columnId: '', sort: 'asc' })"
           >添加分组</el-button
         >
         <el-button @click="state.groupConfig.pop()">删除分组</el-button>
@@ -47,14 +47,20 @@ import { ElButton, ElSelect, ElOption } from 'element-plus';
 import 'element-plus/dist/index.css';
 
 const columns: Column[] = [
-  { field: 'key1', title: 'title1', type: ColumnType.Text, width: 200 },
+  // FIXME: 这里需要想一下是默认第一列就是title还是？
+  { field: 'key1', title: 'title1', type: ColumnType.Title, width: 200 },
   { field: 'key7', title: 'title7', type: ColumnType.Text, width: 200 },
+  { field: 'key10', title: 'title10', type: ColumnType.Text, width: 200 },
+  { field: 'key11', title: 'title11', type: ColumnType.Text, width: 200 },
   { field: 'key12', title: 'title12', type: ColumnType.Text, width: 200 },
-  { field: 'key13', title: 'title13', type: ColumnType.Text, width: 200 },
-  { field: 'key14', title: 'title14', type: ColumnType.Text, width: 200 },
 ];
 
-const groupConfig = ref<{ columnId: string; sort: 'desc' | 'asc' }[]>([]);
+const groupConfig = ref<{ columnId: string; sort: 'desc' | 'asc' }[]>([
+  {
+    columnId: 'key1',
+    sort: 'asc',
+  },
+]);
 
 const state = reactive<{
   groupConfig: {
@@ -62,11 +68,16 @@ const state = reactive<{
     sort: 'desc' | 'asc';
   }[];
 }>({
-  groupConfig: [],
+  groupConfig: [
+    {
+      columnId: 'key1',
+      sort: 'asc',
+    },
+  ],
 });
 
 const confirm = () => {
-  groupConfig.value = JSON.parse(JSON.stringify(state.groupConfig));
+  groupConfig.value = [...state.groupConfig];
 };
 
 const sortOptions = [
@@ -74,16 +85,8 @@ const sortOptions = [
   { label: '降序', value: 'desc' },
 ];
 const groupByOptions = [
-  { value: 'key0', label: 'title0' },
   { value: 'key1', label: 'title1' },
-  { value: 'key2', label: 'title2' },
-  { value: 'key3', label: 'title3' },
-  { value: 'key4', label: 'title4' },
-  { value: 'key5', label: 'title5' },
-  { value: 'key6', label: 'title6' },
   { value: 'key7', label: 'title7' },
-  { value: 'key8', label: 'title8' },
-  { value: 'key9', label: 'title9' },
   { value: 'key10', label: 'title10' },
   { value: 'key11', label: 'title11' },
   { value: 'key12', label: 'title12' },
@@ -123,7 +126,7 @@ const list: ListItem[] = [
     key12: 'row2-key12',
     children: [
       {
-        id: '2 - children',
+        id: '3 - children',
         key0: 'row3-key',
         key1: 'row3-key1',
         key2: 'row3-key2',
@@ -137,13 +140,31 @@ const list: ListItem[] = [
         key10: 'row3-key10',
         key11: 'row3-key11',
         key12: 'row3-key12',
+        children: [
+          {
+            id: '4 - children',
+            key0: 'row4-key',
+            key1: 'row4-key1',
+            key2: 'row4-key2',
+            key3: 'row4-key3',
+            key4: 'row4-key4',
+            key5: 'row4-key5',
+            key6: 'row4-key6',
+            key7: 'row4-key7',
+            key8: 'row4-key8',
+            key9: 'row4-key9',
+            key10: 'row4-key10',
+            key11: 'row4-key11',
+            key12: 'row4-key12',
+          },
+        ],
       },
     ],
   },
   {
     id: '18',
     key0: 'row18-key',
-    key1: 'row1-key1',
+    key1: 'row18-key1',
     key2: 'row18-key2',
     key3: 'row18-key3',
     key4: 'row18-key4',

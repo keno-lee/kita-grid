@@ -264,10 +264,14 @@ function initDataList(list: ListItem[]) {
 watch(
   () => props.groupConfig,
   (nv) => {
-    if (nv?.length) {
-      const list = gridStore.groupFoldConstructor(props.list, nv);
-      initDataList(list);
-    }
+    console.log('groupConfig', nv);
+    const list = gridStore.groupFoldConstructor(props.list, nv);
+    console.log('groupConfig', list);
+    initDataList(list);
+  },
+  {
+    immediate: true,
+    deep: true,
   },
 );
 

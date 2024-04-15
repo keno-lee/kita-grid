@@ -54,10 +54,11 @@ export default defineConfig({
           text: '行设置',
           collapsed: false,
           items: [
-            { text: '展开行', link: '/examples/expand/' },
-            { text: '行/列高亮', link: '/examples/highlight/' },
-            { text: '分组', link: '/examples/group/' },
-            { text: '树形结构', link: '/examples/tree/' },
+            { text: '高亮 highlight', link: '/examples/highlight/' },
+
+            { text: '展开 expand', link: '/examples/expand/' },
+            { text: '分组 group', link: '/examples/group/' },
+            { text: '树形 tree', link: '/examples/tree/' },
           ],
         },
 

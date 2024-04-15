@@ -1,12 +1,13 @@
 <template>
   <div class="base-view">
     <div style="width: 100%; height: 600px; border: 2px solid var(--color-border)">
-      <Grid :columns="columns" :list="list"></Grid>
+      <Grid :columns="columns" :list="list" default-expand-all></Grid>
     </div>
   </div>
 </template>
 <script setup lang="tsx">
 import { Grid, type Column, type ListItem, ColumnType } from 'kita-grid';
+import type { VNode } from 'vue';
 
 const columns: Column[] = [
   {

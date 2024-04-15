@@ -1,7 +1,7 @@
 <template>
   <div class="base-view">
     <div style="width: 100%; height: 600px; border: 2px solid var(--color-border)">
-      <Grid :columns="columns" :list="list" defaultExpandAll border></Grid>
+      <Grid :columns="columns" :list="list" defaultExpandAll border show-tree-line></Grid>
     </div>
   </div>
 </template>
@@ -91,22 +91,23 @@ for (let i = 0; i < 1000; i++) {
           },
         ],
       },
-      {
-        id: `${i}-children1`,
-        key0: `row${i}-children-key`,
-        key1: `row${i}-children-key1`,
-        key2: `row${i}-children-key2`,
-        key3: `row${i}-children-key3`,
-        key4: `row${i}-children-key4`,
-        key5: `row${i}-children-key5`,
-        key6: `row${i}-children-key6`,
-        key7: `row${i}-children-key7`,
-        key8: `row${i}-children-key8`,
-        key9: `row${i}-children-key9`,
-        key10: `row${i}-children-key10`,
-        key11: `row${i}-children-key11`,
-        key12: `row${i}-children-key12`,
-      },
+      // FIXME: 有bug，样式判断的不对
+      // {
+      //   id: `${i}-children1`,
+      //   key0: `row${i}-children-key`,
+      //   key1: `row${i}-children-key1`,
+      //   key2: `row${i}-children-key2`,
+      //   key3: `row${i}-children-key3`,
+      //   key4: `row${i}-children-key4`,
+      //   key5: `row${i}-children-key5`,
+      //   key6: `row${i}-children-key6`,
+      //   key7: `row${i}-children-key7`,
+      //   key8: `row${i}-children-key8`,
+      //   key9: `row${i}-children-key9`,
+      //   key10: `row${i}-children-key10`,
+      //   key11: `row${i}-children-key11`,
+      //   key12: `row${i}-children-key12`,
+      // },
     ];
   }
 }
