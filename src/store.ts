@@ -1,4 +1,4 @@
-import { computed, reactive, shallowReactive, shallowRef, ref, type ShallowRef } from 'vue';
+import { reactive, shallowReactive, ref } from 'vue';
 import {
   ColumnType,
   type Column,
@@ -14,6 +14,7 @@ import { EventEmitter } from './hooks/useEvent';
 import type { VirtListReturn } from 'vue-virt-list';
 import { GridScrollZone } from './interaction/scrollZone';
 import { useTableEvent } from './hooks/useEvent/useTableEvent';
+import { mergeBlock } from './utils/mergeBlock';
 
 export type MergeInfoMap = Record<
   number,
@@ -29,6 +30,13 @@ export type MergeInfoMap = Record<
     };
   }
 >;
+
+export type ViewPositionMap = {
+  colBegin: number;
+  colEnd: number;
+  rowBegin: number;
+  rowEnd: number;
+};
 
 export interface IUIProps {
   border: boolean;
@@ -70,6 +78,12 @@ export interface IUIProps {
     rowIndex: number;
     columnIndex: number;
   }) => string;
+  mergeMethod?: (data: {
+    row: ListItem;
+    column: Column;
+    rowIndex: number;
+    columnIndex: number;
+  }) => MergeCell;
 }
 
 export type ISelectionBorderPos =
@@ -98,6 +112,10 @@ export class GridStore {
     colRenderBegin: 0,
     // 列渲染结束
     colRenderEnd: 0,
+    // 视口内列起始
+    colEnd: 0,
+    // 视口内列结束
+    colBegin: 0,
     // TODO 可能考虑拿出去做非响应式
     rowHeightMap: new Map(),
     // 父子显示的映射
@@ -130,10 +148,10 @@ export class GridStore {
     itemKey: this.rowKey,
     // buffer: 4,
     renderControl: (begin: number, end: number) => {
-      // console.log('renderControl', begin, end, this.bodyMergeMap?.[begin]);
+      const renderInfo = this.preRender(begin, end);
       return {
-        begin: this.bodyMergeMap?.[begin]?.$begin ?? begin,
-        end: this.bodyMergeMap?.[end]?.$end ?? end,
+        begin: renderInfo.begin,
+        end: renderInfo.end,
       };
     },
   });
@@ -439,7 +457,6 @@ export class GridStore {
     const colLen = 200;
     const rowLen = 10000;
     const res = [];
-    console.log(colLen, rowLen);
     for (let i = 0; i < colLen; i++) {
       for (let j = 0; j < rowLen; j++) {
         const mergeCfg = this.mergeFunction(j, i);
@@ -508,7 +525,7 @@ export class GridStore {
   }
 
   groupFoldConstructor(list: ListItem[], conditions: { columnId: string; sort: 'desc' | 'asc' }[]) {
-    console.log('groupFoldConstructor', list.length, conditions);
+    // console.log('groupFoldConstructor', list.length, conditions);
     return this.constructGroup(list, 0, conditions);
   }
 
@@ -926,5 +943,200 @@ export class GridStore {
         this.gridScrollingStatus.value = 'is-scrolling-middle';
       }
     }
+  }
+
+  /**
+   * merge 处理
+   */
+  mergeInfos: MergeCell[] = [];
+  blockMergeInfos: MergeCell[] = [];
+  // horizontalBlockMergeInfos: MergeCell[] = [];
+
+  // 当前视图内的合并单元格信息（包含合并和被合并）
+  viewMergeInfoMap: Record<number, Record<number, MergeCell>> = {};
+
+  isInMergeCell(mergeInfo: MergeCell, rowIndex: number, colIndex: number) {
+    return (
+      mergeInfo.rowIndex <= rowIndex &&
+      mergeInfo.rowIndex + mergeInfo.rowspan - 1 >= rowIndex &&
+      mergeInfo.colIndex <= colIndex! &&
+      mergeInfo.colIndex + mergeInfo.colspan - 1 >= colIndex!
+    );
+  }
+
+  getCellMergeInfo(rowIndex: number, column: Column, stack: number[]) {
+    const row = this.virtualListProps.list[rowIndex];
+    if (this.getUIProps('mergeMethod')) {
+      return this.getUIProps('mergeMethod')!.call(this, {
+        row,
+        column,
+        rowIndex,
+        columnIndex: column.colIndex!,
+      });
+    }
+
+    for (let index = 0; index < this.blockMergeInfos.length; index++) {
+      const mergeInfo = this.blockMergeInfos[index];
+      if (this.isInMergeCell(mergeInfo, rowIndex, column.colIndex!)) {
+        return mergeInfo;
+      }
+    }
+
+    let lastIndex = 0;
+
+    for (let index = 0; index < stack.length; index++) {
+      const mergeInfo = this.mergeInfos[stack[index]];
+      if (this.isInMergeCell(mergeInfo, rowIndex, column.colIndex!)) {
+        return mergeInfo;
+      }
+      if (rowIndex < mergeInfo.rowIndex && column.colIndex! < mergeInfo.colIndex) {
+        return;
+      }
+      if (
+        rowIndex > mergeInfo.rowspan + mergeInfo.rowIndex &&
+        column.colIndex! > mergeInfo.colspan + mergeInfo.colIndex
+      ) {
+        lastIndex = stack[index];
+        stack.splice(index, 1);
+        index--;
+      }
+    }
+    for (let index = lastIndex; index < this.mergeInfos.length; index++) {
+      const mergeInfo = this.mergeInfos[index];
+      if (this.isInMergeCell(mergeInfo, rowIndex, column.colIndex!)) {
+        stack.push(index);
+        return mergeInfo;
+      }
+      if (
+        rowIndex <= mergeInfo.rowspan + mergeInfo.rowIndex &&
+        column.colIndex! <= mergeInfo.colspan + mergeInfo.colIndex &&
+        stack[stack.length - 1] !== index
+      ) {
+        stack.push(index);
+      }
+      if (mergeInfo.rowIndex > rowIndex) {
+        return;
+      }
+    }
+    return;
+  }
+
+  // private AABB(
+  //   a: { start: [number, number]; end: [number, number] },
+  //   b: { start: [number, number]; end: [number, number] },
+  // ) {
+  //   return (
+  //     a.start[0] <= b.end[0] &&
+  //     a.end[0] >= b.start[0] &&
+  //     a.start[1] <= b.end[1] &&
+  //     a.end[1] >= b.start[1]
+  //   );
+  // }
+
+  renderMergeBlock(colBegin: number, colEnd: number, rowBegin: number, rowEnd: number) {
+    if (!this.virtualListRef)
+      return {
+        colRenderBegin: colBegin,
+        colRenderEnd: colEnd,
+        rowRenderBegin: rowBegin,
+        rowRenderEnd: rowEnd,
+      };
+    this.blockMergeInfos = [];
+    const { renderBegin, renderEnd } = this.virtualListRef.reactiveData;
+    const {
+      colBegin: cBegin,
+      colEnd: cEnd,
+      colRenderBegin,
+      colRenderEnd,
+      rowRenderBegin,
+      rowRenderEnd,
+      blockMergeInfos,
+    } = mergeBlock(
+      {
+        colBegin,
+        colEnd,
+        colRenderBegin: this.watchData.colRenderBegin,
+        colRenderEnd: this.watchData.colRenderEnd,
+        rowBegin,
+        rowEnd,
+        rowRenderBegin: renderBegin,
+        rowRenderEnd: renderEnd,
+        listLength: this.centerNormalColumns.length,
+        leftLength: this.leftFixedColumns.length,
+        rightLength: this.rightFixedColumns.length,
+      },
+      this.mergeInfos,
+    );
+
+    // 中间列的起始，除固定列之外
+    this.watchData.colBegin = cBegin;
+    this.watchData.colEnd = cEnd;
+    this.watchData.colRenderBegin = colRenderBegin;
+    this.watchData.colRenderEnd = colRenderEnd;
+
+    this.blockMergeInfos = blockMergeInfos;
+
+    return {
+      colRenderBegin,
+      colRenderEnd,
+      rowRenderBegin,
+      rowRenderEnd,
+    };
+  }
+
+  preRender(begin: number, end: number) {
+    // let realBegin = begin;
+    // let realEnd = end;
+    // const calcRange = (mergeInfo: MergeCell) => {
+    //   // 判断当前节点在不在合并的信息中
+    //   if (
+    //     this.AABB(
+    //       {
+    //         start: [mergeInfo.rowIndex, mergeInfo.colIndex],
+    //         end: [mergeInfo.rowIndex + mergeInfo.rowspan, mergeInfo.colIndex + mergeInfo.colspan],
+    //       },
+    //       {
+    //         start: [realBegin, 0],
+    //         end: [realEnd, this.flattedColumns.length - 1],
+    //       },
+    //     )
+    //   ) {
+    //     realBegin = Math.min(realBegin, mergeInfo.rowIndex);
+    //     realEnd = Math.max(realEnd, mergeInfo.rowIndex + mergeInfo.rowspan);
+    //     return true;
+    //   }
+    //   return false;
+    // };
+
+    // const run = (startIndex = 0) => {
+    //   for (let index = startIndex; index >= 0; index--) {
+    //     const isCollision = calcRange(this.mergeInfos[index]);
+    //     if (!isCollision) {
+    //       break;
+    //     }
+    //   }
+    //   for (let index = startIndex; index < this.mergeInfos.length; index++) {
+    //     const isCollision = calcRange(this.mergeInfos[index]);
+    //     if (!isCollision) {
+    //       break;
+    //     }
+    //   }
+    // };
+    // for (let index = 0; index < this.mergeInfos.length; index++) {
+    //   const isCollision = calcRange(this.mergeInfos[index]);
+    //   if (isCollision) {
+    //     run(index);
+    //     break;
+    //   }
+    // }
+
+    const { colBegin, colEnd } = this.watchData;
+    const { rowRenderBegin: realBegin, rowRenderEnd: realEnd } = this.renderMergeBlock(
+      colBegin,
+      colEnd,
+      begin,
+      end,
+    );
+    return { begin: realBegin, end: Math.max(realEnd, end) };
   }
 }

@@ -77,6 +77,7 @@ const cls = {
     'is-fixed',
     'is-fixed--left',
     index === leftFixedHeaderColumns[props.headerRowIndex].length - 1 && 'is-last-column',
+    // leftFixedHeaderColumns[props.headerRowIndex][index].isLastFixedColumn && 'is-last-column',
     getCellClass(column),
     column.className,
   ],

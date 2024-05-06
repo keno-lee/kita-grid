@@ -1,5 +1,5 @@
 <template>
-  <tr ref="itemRefEl" :class="cls.row()" :style="getRowStyle()">
+  <tr ref="itemRefEl" :class="cls.row()" :style="`${getRowStyle()}; height: ${maxHeight}px`">
     <!-- 左侧固定列 -->
     <template v-for="(column, index) in mainRenderInfo.leftColumns" :key="column.field">
       <td
@@ -110,7 +110,8 @@ const cls = {
     'kita-grid-td',
     'is-fixed',
     'is-fixed--left',
-    index === mainRenderInfo.value.leftColumns.length - 1 && 'is-last-column',
+    // index === mainRenderInfo.value.leftColumns.length - 1 && 'is-last-column',
+    mainRenderInfo.value.leftColumns[index].isLastFixedColumn && 'is-last-column',
     column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),

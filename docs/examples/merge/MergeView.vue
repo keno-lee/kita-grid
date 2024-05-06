@@ -49,18 +49,18 @@ const merges = [
     rowIndex: 3,
     colIndex: 6,
     rowspan: 3,
-    colspan: 2,
+    colspan: 5,
   },
-  {
-    rowIndex: 5,
-    colIndex: 97,
-    rowspan: 2,
-    colspan: 3,
-  },
+  // {
+  //   rowIndex: 5,
+  //   colIndex: 97,
+  //   rowspan: 2,
+  //   colspan: 3,
+  // },
   {
     rowIndex: 13,
     colIndex: 1,
-    rowspan: 6,
+    rowspan: 20,
     colspan: 1,
   },
   {

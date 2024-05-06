@@ -74,6 +74,7 @@ export type ColumnItem = Column & {
   // 列id，
   _id: string;
   children: ColumnItem[];
+  isLastFixedColumn?: boolean;
 };
 
 export interface MergeCell {

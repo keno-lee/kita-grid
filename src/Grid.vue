@@ -105,6 +105,7 @@ import {
   TableEventEnum,
   type Column,
 } from './type';
+import { formatMergeInfos } from './utils/mergeBlock';
 
 const emits = defineEmits<CellEmits & RowEmits & HeaderEmits & TableEmits>();
 
@@ -180,7 +181,7 @@ const props = withDefaults(
     list: () => [],
 
     rowKey: 'id',
-    rowMinHeight: 30,
+    rowMinHeight: 40,
 
     showHeader: true,
     defaultExpandAll: false,
@@ -236,6 +237,19 @@ gridStore.setColumns(props.columns);
 // 这里处理合并单元格信息
 if (props.merges) {
   gridStore.bodyMergeMap = gridStore.mergeMapConstructor(props.merges);
+  // gridStore.mergeInfos = props.merges
+  //   .slice()
+  //   .sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex);
+  const sortMerges = props.merges
+    .slice()
+    .sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex);
+  // 处理固定列和中介列的合并分割场景
+  gridStore.mergeInfos = formatMergeInfos(
+    sortMerges,
+    gridStore.leftFixedColumns.length,
+    gridStore.rightFixedColumns.length,
+    gridStore.centerNormalColumns.length,
+  );
 }
 
 if (props.rowKey) {
@@ -264,9 +278,9 @@ function initDataList(list: ListItem[]) {
 watch(
   () => props.groupConfig,
   (nv) => {
-    console.log('groupConfig', nv);
+    // console.log('groupConfig', nv);
     const list = gridStore.groupFoldConstructor(props.list, nv);
-    console.log('groupConfig', list);
+    // console.log('groupConfig', list);
     initDataList(list);
   },
   {
@@ -323,9 +337,20 @@ function calcVisibleColumns(scrollLeft: number, clientWidth: number) {
   colRenderBegin = Math.max(0, colRenderBegin - 1);
   colRenderEnd = Math.min(centerNormalColumns.length - 1, colRenderEnd + 1);
 
+  const { inViewBegin, inViewEnd } = gridStore.virtualListRef!.reactiveData;
+
+  // 防抖 如果没有可视区域的行没有发生变化的时候不去修改
+  if (
+    colRenderBegin === gridStore.watchData.colRenderBegin &&
+    colRenderEnd === gridStore.watchData.colRenderEnd
+  )
+    return;
+
+  gridStore.renderMergeBlock(colRenderBegin, colRenderEnd, inViewBegin, inViewEnd);
+
   // console.log('计算结束', colRenderBegin, colRenderEnd);
-  gridStore.watchData.colRenderBegin = colRenderBegin;
-  gridStore.watchData.colRenderEnd = colRenderEnd;
+  // gridStore.watchData.colRenderBegin = colRenderBegin;
+  // gridStore.watchData.colRenderEnd = colRenderEnd;
 }
 
 function calcFixedShadow(scrollLeft: number, scrollWidth: number, clientWidth: number) {
