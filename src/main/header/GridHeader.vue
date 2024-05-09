@@ -33,16 +33,10 @@ const centerColumnsInfo = computed(() => {
     const { parentColumn } = headerCellInfo[col._id];
     if (parentColumn) {
       resetRender(parentColumn);
-      // headerCellInfo[parentColumn._id].rendered = false;
     }
   };
   centerNormalColumns.forEach((col) => {
     resetRender(col);
-    // headerCellInfo[col._id].rendered = false;
-    // const { parentColumn } = headerCellInfo[col._id];
-    // if (parentColumn) {
-    //   headerCellInfo[parentColumn._id].rendered = false;
-    // }
   });
 
   const renderHeader = (column: ColumnItem) => {
@@ -66,28 +60,6 @@ const centerColumnsInfo = computed(() => {
   for (let i = gridStore.watchData.colRenderBegin; i <= gridStore.watchData.colRenderEnd; i++) {
     const column = centerNormalColumns[i];
     renderHeader(column);
-    // // console.log('要渲染', column._id, headerCellInfo[column._id]);
-    // const { level = 0, parentColumn } = headerCellInfo[column._id];
-    // if (centerColumnsInfo[level] === undefined) {
-    //   centerColumnsInfo[level] = [];
-    // }
-    // centerColumnsInfo[level].push(column);
-    // headerCellInfo[column._id].rendered = true;
-
-    // // 如果有父级，那么就要渲染父级
-    // if (parentColumn) {
-    //   // console.log('要渲染', parentColumn, headerCellInfo[parentColumn.id]);
-    //   const { level: parentLevel = 0 } = headerCellInfo[parentColumn._id];
-    //   console.warn('parent-1', parentColumn, parentLevel, centerColumnsInfo[parentLevel]);
-    //   if (centerColumnsInfo[parentLevel] === undefined) {
-    //     centerColumnsInfo[parentLevel] = [];
-    //   }
-    //   if (centerColumnsInfo[parentLevel].indexOf(parentColumn) < 0) {
-    //     // 如果不存在，那么就加入渲染
-    //     centerColumnsInfo[parentLevel].push(parentColumn);
-    //     headerCellInfo[parentColumn._id].rendered = true;
-    //   }
-    // }
   }
 
   const baseLeftPadding: number[] = [];

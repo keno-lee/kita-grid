@@ -6,7 +6,7 @@
         :data-id="column._id"
         :class="cls.leftFixed(column, index)"
         :style="`text-align: ${column.headerAlign || column.align}; left: ${
-          headerCellInfo[column._id].left
+          headerCellInfo[column._id].fixOffset
         }px; ${getCellStyle(column)}`"
         :rowspan="headerCellInfo[column._id]?.rowspan"
         :colspan="headerCellInfo[column._id]?.colspan"
@@ -40,7 +40,7 @@
         :data-id="column._id"
         :class="cls.rightFixed(column, index)"
         :style="`text-align: ${column.headerAlign || column.align}; right: ${
-          headerCellInfo[column._id].right
+          headerCellInfo[column._id].fixOffset
         }px; ${getCellStyle(column)}`"
         :rowspan="headerCellInfo[column._id]?.rowspan"
         :colspan="headerCellInfo[column._id]?.colspan"
@@ -76,7 +76,7 @@ const cls = {
     'kita-grid-th',
     'is-fixed',
     'is-fixed--left',
-    index === leftFixedHeaderColumns[props.headerRowIndex].length - 1 && 'is-last-column',
+    // index === leftFixedHeaderColumns[props.headerRowIndex].length - 1 && 'is-last-column',
     // leftFixedHeaderColumns[props.headerRowIndex][index].isLastFixedColumn && 'is-last-column',
     getCellClass(column),
     column.className,
@@ -88,7 +88,7 @@ const cls = {
     'kita-grid-th',
     'is-fixed',
     'is-fixed--right',
-    index === 0 && 'is-first-column',
+    // index === 0 && 'is-first-column',
     getCellClass(column),
     column.className,
   ],
