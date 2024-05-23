@@ -77,6 +77,14 @@
         </tfoot> -->
       </table>
     </div>
+    <div
+      :class="cls.leftFixedShadow"
+      :style="{ left: `${gridStore.watchData.fixedInfo.leftWidth || 0}px` }"
+    ></div>
+    <div
+      :class="cls.rightFixedShadow"
+      :style="{ right: `${gridStore.watchData.fixedInfo.rightWidth + 16 || 0}px` }"
+    ></div>
     <div class="kita-grid-mask" v-if="!list.length">
       <slot name="empty"><p>No Data</p></slot>
     </div>
@@ -409,6 +417,18 @@ const cls = computed(() => ({
     gridStore.getUIProps('highlightHoverRow') && 'kita-grid-main--highlight-hover-row',
   ],
   table: ['kita-grid-table', gridStore.gridScrollingStatus.value],
+  leftFixedShadow: [
+    'kita-fixed-shadow',
+    gridStore.gridScrollingStatus.value !== 'is-scrolling-left' && leftFixedColumns.length > 0
+      ? 'kita-fixed-shadow--left'
+      : '',
+  ],
+  rightFixedShadow: [
+    'kita-fixed-shadow',
+    gridStore.gridScrollingStatus.value !== 'is-scrolling-right' && rightFixedColumns.length > 0
+      ? 'kita-fixed-shadow--right'
+      : '',
+  ],
 }));
 const fullWidth = computed(() => {
   return gridStore.watchData.fullWidth;

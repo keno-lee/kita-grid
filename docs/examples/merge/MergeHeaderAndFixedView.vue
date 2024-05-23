@@ -21,7 +21,7 @@ const columns: Column[] = [
     title: 'key2',
     type: ColumnType.Text,
     width: 200,
-    // fixed: 'left',
+    fixed: 'left',
     children: [
       {
         field: 'key2-1',
@@ -40,13 +40,13 @@ const columns: Column[] = [
                 field: 'key2-1-1-1',
                 title: 'key2-1-1-1',
                 type: ColumnType.Text,
-                width: 200,
+                width: 100,
               },
               {
                 field: 'key2-1-1-2',
                 title: 'key2-1-1-2',
                 type: ColumnType.Text,
-                width: 200,
+                width: 100,
               },
             ],
           },

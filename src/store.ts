@@ -137,6 +137,11 @@ export class GridStore {
       // headerWidth: 100,
     },
     fullWidth: 0,
+
+    fixedInfo: {
+      leftWidth: 0,
+      rightWidth: 0,
+    },
   });
 
   rowKey: string | number = 'id';
@@ -256,6 +261,8 @@ export class GridStore {
       leftFixedHeaderColumns,
       rightFixedHeaderColumns,
       centerNormalHeaderColumns,
+
+      fixedInfo,
     } = formatColumns(columns);
 
     this.leftFixedColumns = leftFixedColumns;
@@ -268,6 +275,7 @@ export class GridStore {
     this.leftFixedHeaderColumns = leftFixedHeaderColumns;
     this.rightFixedHeaderColumns = rightFixedHeaderColumns;
     this.centerNormalHeaderColumns = centerNormalHeaderColumns;
+    this.watchData.fixedInfo = fixedInfo;
     // this.flattedColumns = flattedColumns;
     // // 拿平铺的列进行遍历
     // let leftReduce = 0;

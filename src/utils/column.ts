@@ -13,6 +13,11 @@ export interface FormatColumns {
   leftFixedHeaderColumns: ColumnItem[][];
   rightFixedHeaderColumns: ColumnItem[][];
   centerNormalHeaderColumns: ColumnItem[][];
+
+  fixedInfo: {
+    leftWidth: number;
+    rightWidth: number;
+  };
 }
 
 export type HeaderCellInfo = Record<
@@ -29,8 +34,80 @@ export type HeaderCellInfo = Record<
     isLeaf?: boolean;
     left?: number;
     right?: number;
+    fixOffset?: number;
   }
 >;
+
+const genColumnsWidth = (
+  columns: ColumnItem[],
+  headerCellInfo: HeaderCellInfo,
+  fixArr: ColumnItem[][],
+  isRight: boolean = false,
+  preOffset: number = 0,
+  preWidth: number = 0,
+): {
+  offset: number;
+  maxWidth: number;
+} => {
+  let currOffset = preOffset;
+  let levelWidth = preWidth;
+  let currCols = columns;
+  if (isRight) currCols = columns.reverse();
+  const res = currCols.map((column) => {
+    const colInfo = headerCellInfo[column._id];
+    if (!colInfo) return column;
+    if (colInfo.children && colInfo.children.length > 0) {
+      const { offset: width, maxWidth } = genColumnsWidth(
+        column.children,
+        headerCellInfo,
+        fixArr,
+        isRight,
+        currOffset,
+        levelWidth,
+      );
+      headerCellInfo[column._id].fixOffset = currOffset;
+      levelWidth = maxWidth;
+      const col = {
+        ...column,
+        fixOffset: currOffset,
+      };
+      currOffset = width;
+      return col;
+    } else {
+      headerCellInfo[column._id].fixOffset = currOffset;
+      levelWidth += column.width!;
+      currOffset += column.width!;
+      return {
+        ...column,
+        fixOffset: currOffset - column.width!,
+      };
+    }
+  });
+  fixArr.unshift(res);
+  return { offset: currOffset, maxWidth: levelWidth };
+};
+
+export const calcFixedColumnsOffset = (
+  leftFixedColumns: ColumnItem[],
+  rightFixedColumns: ColumnItem[],
+  headerCellInfo: HeaderCellInfo,
+) => {
+  const leftFixedHeaderColumns: ColumnItem[][] = [];
+  const rightFixedHeaderColumns: ColumnItem[][] = [];
+
+  const { maxWidth: left } = genColumnsWidth(
+    leftFixedColumns,
+    headerCellInfo,
+    leftFixedHeaderColumns,
+  );
+  const { maxWidth: right } = genColumnsWidth(
+    rightFixedColumns,
+    headerCellInfo,
+    rightFixedHeaderColumns,
+    true,
+  );
+  return { leftFixed: left, rightFixed: right };
+};
 
 export const formatColumns = (originColumns: Column[]): FormatColumns => {
   // console.log('originColumns', originColumns);
@@ -42,62 +119,6 @@ export const formatColumns = (originColumns: Column[]): FormatColumns => {
   // 一个所有子节点组成的数组
   // const flattedColumns: ColumnItem[] = [];
   const headerCellInfo: HeaderCellInfo = {};
-
-  // const updateParentInfo = (colId: string, key: 'left' | 'colspan', val: number) => {
-  //   if (!colId || !key) return;
-  //   const parentColumn = headerCellInfo[colId].parentColumn;
-  //   if (!parentColumn) return;
-  //   headerCellInfo[parentColumn._id][key] = val;
-  //   updateParentInfo(parentColumn._id, key, val);
-  // };
-
-  // function getHeaderGroupColSpan(columns: ColumnItem[]) {
-  //   let maxColspan = 0;
-  //   let maxWidth = 0;
-
-  //   for (const column of columns) {
-  //     if (column.children) {
-  //       const { colspan, width } = getHeaderGroupColSpan(column.children);
-  //       maxColspan += colspan;
-  //       maxWidth += width!;
-  //     } else {
-  //       maxColspan += 1;
-  //       maxWidth += column.width!;
-  //     }
-  //   }
-
-  //   return { colspan: maxColspan, width: maxWidth };
-  // }
-
-  // function updateHeaderGroupInfo(
-  //   col: ColumnItem,
-  //   key: 'headerWidth' | 'headerColspan',
-  //   val: number,
-  // ) {
-  //   // @ts-ignore
-  //   headerCellInfo[col._id][key] = val;
-  //   if (col.children && col.children.length > 0) {
-  //     for (const child of col.children) {
-  //       // console.warn('child', child);
-  //       updateHeaderGroupInfo(child, key, val);
-  //     }
-  //   }
-  // }
-
-  // function generateHeaderColSpan(columns: ColumnItem[]) {
-  //   for (const col of columns) {
-  //     if (col.children && col.children.length > 0) {
-  //       const { colspan, width } = getHeaderGroupColSpan(col.children);
-  //       updateHeaderGroupInfo(col, 'headerColspan', colspan);
-  //       updateHeaderGroupInfo(col, 'headerWidth', width);
-  //     } else {
-  //       updateHeaderGroupInfo(col, 'headerColspan', 1);
-  //       updateHeaderGroupInfo(col, 'headerWidth', col.width!);
-  //     }
-  //   }
-  // }
-
-  // generateHeaderColSpan(originColumns as ColumnItem[]);
 
   // 深度遍历整个 column 将最底层的 column 进行归档
   let maxLevel = 0;
@@ -117,7 +138,7 @@ export const formatColumns = (originColumns: Column[]): FormatColumns => {
     parentLeftReduce?: number;
   }) {
     maxLevel = Math.max(maxLevel, level);
-    // console.log('columns', columns, length);
+    // console.log('columns', columns);
     let childCountReduce = 0;
     let leftReduce: number = parentLeftReduce;
     columns.forEach((_col) => {
@@ -253,6 +274,12 @@ export const formatColumns = (originColumns: Column[]): FormatColumns => {
     rightReduce += rightFixedColumns[i].width!;
   }
 
+  const { leftFixed, rightFixed } = calcFixedColumnsOffset(
+    leftFixedHeaderColumns[0],
+    rightFixedHeaderColumns[0],
+    headerCellInfo,
+  );
+
   const flattedColumns: ColumnItem[] = [
     ...leftFixedColumns,
     ...centerNormalColumns,
@@ -279,5 +306,10 @@ export const formatColumns = (originColumns: Column[]): FormatColumns => {
     leftFixedHeaderColumns,
     rightFixedHeaderColumns,
     centerNormalHeaderColumns,
+
+    fixedInfo: {
+      leftWidth: leftFixed,
+      rightWidth: rightFixed,
+    },
   };
 };

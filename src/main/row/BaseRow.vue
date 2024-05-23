@@ -5,7 +5,7 @@
       <td
         :class="cls.leftFixed(column, index)"
         :style="`text-align: ${column.align}; left: ${
-          headerCellInfo[column._id].left
+          headerCellInfo[column._id].fixOffset
         }px; ${getCellStyle(column)}`"
         :rowspan="column?.rowspan"
         :colspan="column?.colspan"
@@ -57,7 +57,7 @@
       <td
         :class="cls.rightFixed(column, index)"
         :style="`text-align: ${column.align}; right: ${
-          headerCellInfo[column._id].right
+          headerCellInfo[column._id].fixOffset
         }px; ${getCellStyle(column)}`"
         :rowspan="column?.rowspan"
         :colspan="column?.colspan"
@@ -111,7 +111,7 @@ const cls = {
     'is-fixed',
     'is-fixed--left',
     // index === mainRenderInfo.value.leftColumns.length - 1 && 'is-last-column',
-    mainRenderInfo.value.leftColumns[index].isLastFixedColumn && 'is-last-column',
+    // mainRenderInfo.value.leftColumns[index].isLastFixedColumn && 'is-last-column',
     column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),
@@ -130,7 +130,7 @@ const cls = {
     'kita-grid-td',
     'is-fixed',
     'is-fixed--right',
-    index === 0 && 'is-first-column',
+    // index === 0 && 'is-first-column',
     column._id === selectColId.value && 'current-column',
     gridStore.getSelectionClass(props.rowIndex, column),
     getCellClass(column),
